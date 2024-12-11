@@ -27,7 +27,7 @@ class LanguageButton extends StatelessWidget {
               Row(
                 children: [
                   CustomIconButton(
-                    onTap: () => Navigator.pop(context),
+                    onPressed: () => Navigator.pop(context),
                     icon: Icons.close_outlined,
                     iconSize: 22,
                     iconColor: Coloors.greyDark,

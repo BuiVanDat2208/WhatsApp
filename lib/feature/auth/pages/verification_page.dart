@@ -1,47 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:whatsapp_clone/common/extension/custom_theme_extension.dart';
 import 'package:whatsapp_clone/common/widgets/custom_icon_button.dart';
 import 'package:whatsapp_clone/feature/auth/widget/custom_text_field.dart';
+import 'package:whatsapp_clone/feature/controller/auth_controller.dart';
 
-class VerificationPage extends StatefulWidget {
-  const VerificationPage({super.key});
+class VerificationPage extends ConsumerWidget {
+  const VerificationPage({
+    super.key,
+    required this.smsCodeId,
+    required this.phoneNumber,
+  });
 
-  @override
-  State<VerificationPage> createState() => _VerificationPageState();
-}
+  final String smsCodeId;
+  final String phoneNumber;
 
-class _VerificationPageState extends State<VerificationPage> {
-  late TextEditingController codeController;
-
-  @override
-  void initState() {
-    codeController = TextEditingController();
-    super.initState();
+  void verifySmsCode(
+    BuildContext context,
+    WidgetRef ref,
+    String smsCode,
+  ) {
+    ref.read(authControllerProvider).verifySmsCode(
+          context: context,
+          smsCodeId: smsCodeId,
+          smsCode: smsCode,
+          mounted: true,
+        );
   }
 
   @override
-  void dispose() {
-    codeController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).dialogBackgroundColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
+        centerTitle: true,
         title: Text(
-          "Verify your number",
+          'Verify your number',
           style: TextStyle(
             color: context.theme.authAppbarTextColor,
           ),
         ),
-        centerTitle: true,
         actions: [
           CustomIconButton(
-            onTap: () {},
-            icon: Icons.more_vert_outlined,
+            onPressed: () {},
+            icon: Icons.more_vert,
           ),
         ],
       ),
@@ -54,14 +57,11 @@ class _VerificationPageState extends State<VerificationPage> {
               child: RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
-                  style: TextStyle(
-                    color: context.theme.greyColor,
-                    height: 1.5,
-                  ),
+                  style: TextStyle(color: context.theme.greyColor),
                   children: [
                     const TextSpan(
                       text:
-                          "You've tried to register +84586392705. Befog requisitions in SMS or call with your code",
+                          "You've tried to register +251935838471. before requesting an SMS or Call with your code.",
                     ),
                     TextSpan(
                       text: "Wrong number?",
@@ -77,49 +77,46 @@ class _VerificationPageState extends State<VerificationPage> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 80),
               child: CustomTextField(
-                controller: codeController,
-                hintText: "--- ---",
+                hintText: "- - -  - - -",
                 fontSize: 30,
                 autoFocus: true,
                 keyboardType: TextInputType.number,
-                onChanged: (value) {},
+                onChanged: (value) {
+                  if (value.length == 6) {
+                    return verifySmsCode(context, ref, value);
+                  }
+                },
               ),
             ),
             const SizedBox(height: 20),
             Text(
-              "Enter 6-digit code",
-              style: TextStyle(
-                color: context.theme.greyColor,
-              ),
+              'Enter 6-digit code',
+              style: TextStyle(color: context.theme.greyColor),
             ),
             const SizedBox(height: 30),
             Row(
               children: [
-                Icon(
-                  Icons.message,
-                  color: context.theme.greyColor,
-                ),
+                Icon(Icons.message, color: context.theme.greyColor),
                 const SizedBox(width: 20),
                 Text(
-                  "Resend SMS",
-                  style: TextStyle(color: context.theme.greyColor),
+                  'Resend SMS',
+                  style: TextStyle(
+                    color: context.theme.greyColor,
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 10),
             Divider(
-              color: context.theme.greyColor!.withOpacity(0.3),
+              color: context.theme.greyColor!.withOpacity(.2),
             ),
             const SizedBox(height: 10),
             Row(
               children: [
-                Icon(
-                  Icons.phone,
-                  color: context.theme.greyColor,
-                ),
+                Icon(Icons.phone, color: context.theme.greyColor),
                 const SizedBox(width: 20),
                 Text(
-                  "Call me",
+                  'Call Me',
                   style: TextStyle(
                     color: context.theme.greyColor,
                   ),
